@@ -1,12 +1,13 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import graphqlHttp from 'express-graphql';
-import { buildSchema } from 'graphql';
+const express = require('express');
+const bodyParser = require('body-parser');
+const graphqlHttp = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+const config = require('./config');
+const Event = require('./models/event');
 
 // Init App
 const app = express();
-
-const events = [];
 
 app.use(bodyParser.json());
 
@@ -44,18 +45,33 @@ app.use(
     `),
     rootValue: {
       events: () => {
-        return events;
+        return Event.find()
+          .then(events => {
+            return events.map(event => {
+              return { ...event._doc, _id: event.id }; // same as event._doc._id.toString()
+            });
+          })
+          .catch(err => {
+            throw err;
+          });
       },
       createEvent: args => {
-        const event = {
-          _id: Math.random().toString(),
+        const event = new Event({
           title: args.eventInput.title,
           description: args.eventInput.description,
           price: +args.eventInput.price,
-          date: args.eventInput.date,
-        };
-        events.push(event);
-        return event;
+          date: new Date(args.eventInput.date),
+        });
+        return event
+          .save()
+          .then(result => {
+            console.log(result);
+            return { ...result._doc, _id: result._doc._id.toString() };
+          })
+          .catch(err => {
+            console.log(err);
+            throw err;
+          });
       },
     },
     graphiql: true,
@@ -64,8 +80,9 @@ app.use(
 
 // Set Port
 app.set('port', process.env.PORT || 3000);
+
 // eslint-disable-next-line no-unused-vars
-let server = app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
   // eslint-disable-next-line no-console
   console.log(
     '---------------------------------------\n' +

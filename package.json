@@ -4,7 +4,7 @@
   "description": "Event Booking System",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js --exec babel-node --presets env",
+    "start": "nodemon app.js",
     "lint": "eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,15 +14,18 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
-    "graphql": "^14.0.2"
+    "graphql": "^14.0.2",
+    "mongoose": "^5.4.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "eslint": "^5.9.0",
+    "eslint": "^5.11.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
-    "nodemon": "^1.18.7",
+    "nodemon": "^1.18.9",
     "prettier": "^1.15.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dawe484/graphql-react-event-booking.git"
   }
 }
